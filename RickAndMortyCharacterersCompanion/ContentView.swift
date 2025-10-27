@@ -1,9 +1,4 @@
-//
-//  ContentView.swift
-//  RickAndMortyCharacterersCompanion
-//
-//  Created by Willie Earl on 10/25/25.
-//
+
 
 import SwiftUI
 
