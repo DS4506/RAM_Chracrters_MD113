@@ -1,17 +1,25 @@
-//
-//  RickAndMortyCharacterersCompanionApp.swift
-//  RickAndMortyCharacterersCompanion
-//
-//  Created by Willie Earl on 10/25/25.
-//
 
 import SwiftUI
+import Combine
 
 @main
 struct RickAndMortyCharacterersCompanionApp: App {
+    @StateObject private var mediaStore = MediaStore()
+    @StateObject private var wcManager = WCManager.shared
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
+                .environmentObject(mediaStore)
+                .onAppear {
+                    wcManager.activate()
+                    wcManager.onCaptureRequest = { kind in
+                        Task { await CameraController.shared.handleRemoteCapture(kind: kind, mediaStore: mediaStore) }
+                    }
+                    wcManager.onSyncRequest = {
+                        Task { await wcManager.pushThumbnails(from: mediaStore) }
+                    }
+                }
         }
     }
 }
